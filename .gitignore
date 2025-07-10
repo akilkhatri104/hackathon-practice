@@ -1,0 +1,4 @@
+# Server
+server/_pycache_/
+server/.venv/
+server/.env
