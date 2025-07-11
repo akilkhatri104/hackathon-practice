@@ -26,7 +26,16 @@ async def signup(response: Response,user: UserRequest):
 
     access_token = await create_session(user_id)
 
-    response.set_cookie(key="access_token",value=str(access_token))
+    response.set_cookie(
+            key="access_token",
+            value=str(access_token),
+            httponly=True,      # Protect from JS (XSS)
+            secure=True,        # Only over HTTPS
+            samesite="strict",  # CSRF protection: 'strict' | 'lax' | 'none'
+            max_age=3600,       # 1 hour in seconds
+            path="/",           # Cookie is valid for all routes
+            domain=None         # Set this if needed for subdomains
+                            )
     response.status_code = status.HTTP_201_CREATED
     return {
         "message": "User signed up successfully",
@@ -36,12 +45,13 @@ async def signup(response: Response,user: UserRequest):
 @userRouter.post("/logout")
 async def logout(response: Response,access_token: Annotated[str | None,Cookie()] = None):
     try:
-        if access_token is None:
+        user_id = await verify_jwt(access_token)
+        if access_token or user_id is None:
             response.status_code = status.HTTP_403_FORBIDDEN
             return {
                 "message": "User is already logged out"
             }
-        user_id = verify_jwt(access_token)
+            
         deletion = await delete_refresh_token_from_db(user_id)
         response.set_cookie(key="access_token",value="")
         
@@ -90,7 +100,16 @@ async def login(response: Response,user: SigninRequest):
         access_token = await create_session(user_exists["id"])
 
         print("Setting access token in response")
-        response.set_cookie(key="access_token",value=str(access_token))
+        response.set_cookie(
+            key="access_token",
+            value=str(access_token),
+            httponly=True,      # Protect from JS (XSS)
+            secure=True,        # Only over HTTPS
+            samesite="strict",  # CSRF protection: 'strict' | 'lax' | 'none'
+            max_age=3600,       # 1 hour in seconds
+            path="/",           # Cookie is valid for all routes
+            domain=None         # Set this if needed for subdomains
+                            )
         response.status_code = status.HTTP_200_OK
         return {
             "message": "User signed in successfully",

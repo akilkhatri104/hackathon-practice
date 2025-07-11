@@ -56,7 +56,7 @@ async def delete_refresh_token_from_db(user_id:int):
         await database.connect()
         
 
-        stmt = update(users).where(users.c.id == user_id).values(refresh_token=None)
+        stmt = update(users).where(users.c.id == user_id).values(refresh_token="")
         print("Deleting refresh token with query:", stmt)
         update_result = await database.execute(stmt)
 
