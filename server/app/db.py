@@ -15,8 +15,8 @@ users = Table(
     "users",
     metadata,
     Column("id",Integer,primary_key=True),
-    Column("username",Text,nullable=False),
-    Column("email",Text,nullable=False),
+    Column("username",Text,nullable=False,unique=True),
+    Column("email",Text,nullable=False,unique=True),
     Column("password",Text,nullable=False),
     Column("refresh_token",Text)
 )
