@@ -18,6 +18,7 @@ users = Table(
     Column("username",Text,nullable=False),
     Column("email",Text,nullable=False),
     Column("password",Text,nullable=False),
+    Column("refresh_token",Text)
 )
 
 database = Database(DATABASE_URL)
