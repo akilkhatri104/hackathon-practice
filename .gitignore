@@ -1,4 +1,12 @@
 # Server
-server/__pycache__/
+# Ignore Python bytecode
+__pycache__/
+**/__pycache__/
+
+# Bytecode files
+*.pyc
+*.pyo
+*.pyd
+
 server/.venv/
 server/.env
